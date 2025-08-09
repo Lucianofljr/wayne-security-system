@@ -1,0 +1,63 @@
+wayne-security-system/
+│
+├── backend/                          # Pasta do Flask
+│   ├── app/
+│   │   ├── __init__.py               # Inicialização do app Flask
+│   │   ├── config.py                 # Configurações (ex.: banco de dados, secret key)
+│   │   ├── models.py                 # Modelos (Usuario, Recurso, etc.)
+│   │   ├── routes/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_routes.py        # Rotas de login, autenticação
+│   │   │   ├── recurso_routes.py     # Rotas CRUD de recursos
+│   │   │   ├── dashboard_routes.py   # Rotas para dados do dashboard
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_service.py       # Lógica de autenticação e permissões
+│   │   │   ├── recurso_service.py    # Lógica de manipulação de recursos
+│   │   │   ├── dashboard_service.py  # Lógica do dashboard
+│   │   ├── database.py               # Conexão com banco de dados (SQLAlchemy)
+│   │   ├── utils.py                  # Funções auxiliares (ex.: gerar token)
+│   │   └── schemas.py                # Schemas para serialização (Marshmallow/Pydantic)
+│   │
+│   ├── venv/                         # Ambiente virtual Python
+│   ├── requirements.txt              # Dependências do Flask
+│   └── wsgi.py                       # Ponto de entrada do servidor
+│
+├── frontend/                         # Pasta do React
+│   ├── public/                       # Arquivos estáticos públicos
+│   │   ├── index.html
+│   │   └── favicon.ico
+│   │
+│   ├── src/
+│   │   ├── components/               # Componentes reutilizáveis
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   ├── DashboardCard.jsx
+│   │   │   └── ResourceForm.jsx
+│   │   │
+│   │   ├── pages/                    # Páginas principais
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── DashboardPage.jsx
+│   │   │   ├── ResourcesPage.jsx
+│   │   │   └── UsersPage.jsx
+│   │   │
+│   │   ├── services/                 # Conexão com API Flask
+│   │   │   ├── api.js                 # Configuração base do Axios/fetch
+│   │   │   ├── authService.js         # Login e autenticação
+│   │   │   ├── recursoService.js      # CRUD de recursos
+│   │   │   └── dashboardService.js    # Busca dados do dashboard
+│   │   │
+│   │   ├── styles/                   # Estilos CSS/SCSS
+│   │   │   ├── main.css
+│   │   │   └── dashboard.css
+│   │   │
+│   │   ├── App.jsx                   # Componente raiz React
+│   │   ├── index.jsx                 # Entrada principal do React
+│   │   └── routes.jsx                # Rotas do React Router
+│   │
+│   ├── package.json                  # Dependências do React
+│   └── vite.config.js                 # Configuração do Vite
+│
+├── .gitignore
+├── README.md                         # Documentação do projeto
+└── docker-compose.yml                 # (Opcional) Configuração Docker para subir frontend+backend
