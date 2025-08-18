@@ -19,12 +19,36 @@ function LoginPage() {
     };
 
     return (
-        <div className='login-page-container'>
-            <form onSubmit={handleLogin}>
-                <input type="email" value={email} placeholder='E-mail' onChange={(e) => setEmail(e.target.value)} />
-                <input type="password" value={senha} placeholder='Senha' onChange={(e) => setSenha(e.target.value)} />
-                <button type="submit">Entrar</button>
-            </form>
+        <div className='login-page'>
+            <div className='login-container'>
+                <h2 className='login-title'>BatStage - Acesso</h2>
+
+                <form className='login-form' onSubmit={handleLogin}>
+                    {/* Campo login */}
+                    <div className='input-group'>
+                        <label htmlFor="login">Login</label>
+                        <input type="email" value={email} placeholder='E-mail' onChange={(e) => setEmail(e.target.value)} />
+                    </div>
+
+                    {/* Campo Senha */}
+                    <div className='input-group'>
+                        <label htmlFor="senha">Senha</label>
+                        <input type="password" value={senha} placeholder='Senha' onChange={(e) => setSenha(e.target.value)} />
+                    </div>
+
+                    {/* Esqueceu a senha */}
+                    <div className='forgot-password'>
+                        <a href="#">Esqueceu a senha?</a>
+                    </div>
+
+                    {/* Botao de acessar */}
+                    <button className='btn-primary' type="submit">Entrar</button>
+
+                </form>
+                <p className='register-text'>
+                    Não tem conta? <a href="/register">Registrar</a>
+                </p>
+            </div>
         </div>
     );
 }

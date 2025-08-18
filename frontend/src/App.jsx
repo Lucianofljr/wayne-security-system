@@ -5,15 +5,7 @@ import SideBar from './components/SideBar'
 
 function App() {
   return (
-    <div className='App'>
-      <NavBar />
-      <div className='main-layout'>
-        <SideBar />
-        <main className='content'>
-          <AppRoutes />
-        </main>
-      </div>
-    </div>
+    <AppRoutes />
   )
 }
 

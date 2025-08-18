@@ -1,8 +1,8 @@
 from app.models import Usuario
-from app.database import Session
+from app.database import SessionLocal
 
 def create_user(name, email, senha, cargo):
-    db = Session()
+    db = SessionLocal()
     new_user = Usuario(
         name=name,
         email=email,
@@ -15,7 +15,7 @@ def create_user(name, email, senha, cargo):
     return new_user
 
 def login(email, senha):
-    db = Session()
+    db = SessionLocal()
     user = db.query(Usuario).filter_by(email=email).first()
     if user and user.verificar_senha(senha):
         return user

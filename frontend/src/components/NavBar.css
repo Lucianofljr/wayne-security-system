@@ -1,0 +1,47 @@
+
+  /* Estilos para a Navbar */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #201f1f;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-brand a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #dadada;
+    text-decoration: none;
+  }
+  
+  .navbar-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-links li {
+    margin-left: 20px;
+  }
+  
+  .navbar-links a,
+  .navbar-links button {
+    text-decoration: none;
+    color: #dadada;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .navbar-links a:hover,
+  .navbar-links button:hover {
+    background-color: #f0f0f0;
+  }
+  
