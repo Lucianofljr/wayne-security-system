@@ -5,14 +5,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #201f1f;
+    background-color: var(--black-900);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
   .navbar-brand a {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #dadada;
+    color: var(--primary-button);
     text-decoration: none;
   }
   
@@ -42,6 +42,6 @@
   
   .navbar-links a:hover,
   .navbar-links button:hover {
-    background-color: #f0f0f0;
+    background-color: #8d1e1e;
   }
   

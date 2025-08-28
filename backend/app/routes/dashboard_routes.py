@@ -1,2 +1,7 @@
-# from flask import Blueprint, jsonify
-# from app.services.dashboard_service import get_dashboard_data
+from flask import Blueprint, jsonify
+
+dashboard_bp = Blueprint('dashboard', __name__)
+
+@dashboard_bp.route('/', methods=['GET'])
+def get_dashboard():
+    return jsonify({'message': 'Dashboard funcionando!'})

@@ -1,0 +1,34 @@
+:root {
+    --black-100: #e6e9f0;
+    --black-200: #cdd3e1;
+    --black-300: #aab3cc;
+    --black-400: #555f7d;
+    --black-500: #454f6a;
+    --black-600: #363d56;
+    --black-700: #272f43;
+    --black-800: #181f2e;
+    --black-900: #0d0d0d;
+
+    --primary-text: #e6e6e6;
+    --secondary-text: #a0a0a0;
+
+    --sucess: #22c55e;
+    --warning: #eab308;
+    --error: #991b1b;
+    --info: #0ea5e9;
+
+    --text-over-primary: #0a0f1a;
+    --text-over-primary-dark: #e6e9f0;
+    --text-over-primary-light: #0a0f1a;
+    --text-over-sucess: #0a0f1a;
+    --text-over-warning: #0a0f1a;
+    --text-over-error: #e6e9f0;
+    --text-over-info: #0a0f1a;
+
+    --text-defaut: #e6e9f0;
+    --text-muted: #aab3cc;
+
+    --primary-button: #ffd600;
+    --secondary-button: #0a1a2f;
+    --hover-button: #ffb400;
+} 
