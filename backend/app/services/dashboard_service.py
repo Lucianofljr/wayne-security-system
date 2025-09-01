@@ -9,14 +9,15 @@ def get_dashboard_data(user_id, user_cargo):
     db = SessionLocal()
     try:
         # Dados base para todos os usuários
+        total_usuarios = db.query(Usuario).count()
         total_recursos = db.query(Recurso).count()
         recursos_criticos = db.query(Recurso).filter(Recurso.quantidade < 10).count()
         
         # Dados específicos por cargo
         if user_cargo == 'admin':
-            total_usuarios = db.query(Usuario).count()
             
             return {
+                alertas_pendentes = db.query(Alerta)
                 'stats': {
                     'total_usuarios': total_usuarios,
                     'total_recursos': total_recursos,

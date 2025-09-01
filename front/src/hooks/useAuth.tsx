@@ -5,7 +5,12 @@ export function useAuth() {
     const [user, setUser] = useState<User | null>(null);
     
     useEffect(() => {
-        const token = authService.getToken();
+        let token: string | null = null;
+        try {
+            token = authService.getToken();
+        } catch (error) {
+            console.error('Failed to get token:', error);
+        }
         if (token) {
             authService.getCurrentUser().then(setUser);
         }

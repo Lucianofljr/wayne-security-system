@@ -1,278 +1,347 @@
-// front/src/services/authService.ts
 export interface User {
-  id: string;
+  id: number;
   name: string;
+  cpf: string;
   email: string;
-  cargo: string;
+  cargo: 'admin' | 'gerente' | 'usuario';
 }
 
-export interface LoginCredentials {
+export interface LoginData {
   email: string;
-  senha: string; // Mudança para coincidir com seu backend
+  senha: string;
 }
 
 export interface RegisterData {
   name: string;
+  cpf: string;
   email: string;
-  senha: string; // Mudança para coincidir com seu backend
-  cargo: string;
+  senha: string;
+  cargo: 'admin' | 'gerente' | 'usuario';
 }
 
 export interface AuthResponse {
-  token: string;
-  refreshToken: string;
-  user: User;
-  success: boolean;
   message: string;
+  success: boolean;
+  user: User;
+  token: string;
+  refreshtoken: string;
 }
 
 class AuthService {
-  private readonly TOKEN_KEY = 'authToken';
-  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
-  private readonly API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
-  // Salvar tokens no localStorage
-  private setTokens(token: string, refreshToken?: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
-    if (refreshToken) {
-      localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-    }
+  getToken() {
+      throw new Error('Method not implemented.');
+  }
+  private baseURL = 'http://localhost:5000/api'; // Ajuste conforme sua configuração
+  
+  // Salva o token no localStorage
+  private setAuthToken(token: string): void {
+    localStorage.setItem('authToken', token);
   }
 
-  // Obter token do localStorage
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+  // Remove o token do localStorage
+  private removeAuthToken(): void {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
   }
 
-  // Obter refresh token
-  getRefreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+  // Recupera o token do localStorage
+  private getAuthToken(): string | null {
+    return localStorage.getItem('authToken');
   }
 
-  // Verificar se há token
-  hasToken(): boolean {
-    return !!this.getToken();
-  }
-
-  // Fazer requisição com token
-  private async fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
-    const token = this.getToken();
-    
-    const headers = {
+  // Headers para requisições autenticadas
+  private getAuthHeaders(): HeadersInit {
+    const token = this.getAuthToken();
+    return {
       'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
+      ...(token && { 'Authorization': `Bearer ${token}` })
     };
-
-    const response = await fetch(`${this.API_BASE_URL}${url}`, {
-      ...options,
-      headers,
-    });
-
-    // Se token expirou, tentar renovar
-    if (response.status === 401 && token) {
-      const newToken = await this.refreshToken();
-      if (newToken) {
-        // Repetir a requisição com novo token
-        return fetch(`${this.API_BASE_URL}${url}`, {
-          ...options,
-          headers: {
-            ...headers,
-            Authorization: `Bearer ${newToken}`,
-          },
-        });
-      } else {
-        // Se não conseguiu renovar, fazer logout
-        this.logout();
-        throw new Error('Sessão expirada. Faça login novamente.');
-      }
-    }
-
-    return response;
   }
 
-  // Login
-  async login(credentials: LoginCredentials): Promise<User> {
+  // Login do usuário
+  async login(loginData: LoginData): Promise<User> {
     try {
-      const response = await fetch(`${this.API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${this.baseURL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials),
+        body: JSON.stringify(loginData),
       });
 
       const data = await response.json();
 
-      if (!response.ok || !data.success) {
+      if (!response.ok) {
         throw new Error(data.message || 'Erro no login');
       }
 
-      // Salvar tokens
-      this.setTokens(data.token, data.refreshToken);
-      
+      // Salvar tokens e dados do usuário
+      this.setAuthToken(data.token);
+      localStorage.setItem('refreshToken', data.refreshtoken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       return data.user;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Erro no login:', error);
-      throw new Error(error.message || 'Erro ao conectar com o servidor');
+      throw error;
     }
   }
 
-  // Registro
-  async register(userData: RegisterData): Promise<User> {
+  // Registro de usuário
+  async register(registerData: RegisterData): Promise<User> {
     try {
-      const response = await fetch(`${this.API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${this.baseURL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(registerData),
       });
 
       const data = await response.json();
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Erro no cadastro');
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro no registro');
       }
 
-      // Salvar tokens
-      this.setTokens(data.token, data.refreshToken);
-      
+      // Salvar tokens e dados do usuário
+      this.setAuthToken(data.token);
+      localStorage.setItem('refreshToken', data.refreshtoken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       return data.user;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Erro no registro:', error);
-      throw new Error(error.message || 'Erro ao conectar com o servidor');
-    }
-  }
-
-  // Renovar token
-  async refreshToken(): Promise<string | null> {
-    const refreshToken = this.getRefreshToken();
-    
-    if (!refreshToken) {
-      this.logout();
-      return null;
-    }
-
-    try {
-      const response = await fetch(`${this.API_BASE_URL}/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        this.logout();
-        return null;
-      }
-
-      const data = await response.json();
-      this.setTokens(data.token);
-      
-      return data.token;
-    } catch (error) {
-      console.error('Erro ao renovar token:', error);
-      this.logout();
-      return null;
-    }
-  }
-
-  // Obter dados do usuário atual
-  async getCurrentUser(): Promise<User | null> {
-    try {
-      const response = await this.fetchWithAuth('/auth/me');
-
-      if (!response.ok) {
-        return null;
-      }
-
-      const data = await response.json();
-      return data.user;
-    } catch (error) {
-      console.error('Erro ao obter usuário:', error);
-      return null;
-    }
-  }
-
-  // Validar token no servidor
-  async validateToken(): Promise<boolean> {
-    try {
-      const response = await this.fetchWithAuth('/auth/validate');
-      return response.ok;
-    } catch (error) {
-      return false;
+      throw error;
     }
   }
 
   // Logout
   async logout(): Promise<void> {
     try {
-      // Notificar o backend sobre o logout
-      await this.fetchWithAuth('/auth/logout', {
-        method: 'POST',
-      });
+      const token = this.getAuthToken();
+      if (token) {
+        await fetch(`${this.baseURL}/auth/logout`, {
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+        });
+      }
     } catch (error) {
       console.error('Erro no logout:', error);
     } finally {
-      // Sempre limpar tokens localmente
-      localStorage.removeItem(this.TOKEN_KEY);
-      localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+      this.removeAuthToken();
+    }
+  }
+
+  // Recuperar usuário atual
+  getCurrentUser(): User | null {
+    try {
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (error) {
+      console.error('Erro ao recuperar usuário:', error);
+      return null;
     }
   }
 
   // Verificar se está autenticado
   isAuthenticated(): boolean {
-    return this.hasToken();
+    const token = this.getAuthToken();
+    const user = this.getCurrentUser();
+    return !!(token && user);
   }
 
-  // Fazer requisições autenticadas para qualquer endpoint
-  async apiCall(endpoint: string, options: RequestInit = {}): Promise<Response> {
-    return this.fetchWithAuth(endpoint, options);
+  // Validar token
+  async validateToken(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseURL}/auth/validate`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+      });
+
+      const data = await response.json();
+      return data.valid === true;
+    } catch (error) {
+      console.error('Erro na validação do token:', error);
+      return false;
+    }
   }
 
-  // Métodos específicos para recursos
-  async getRecursos() {
-    const response = await this.fetchWithAuth('/recurso');
-    return response.json();
+  // Refresh token
+  async refreshToken(): Promise<string | null> {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) return null;
+
+      const response = await fetch(`${this.baseURL}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${refreshToken}`
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao renovar token');
+      }
+
+      this.setAuthToken(data.token);
+      return data.token;
+    } catch (error) {
+      console.error('Erro ao renovar token:', error);
+      this.removeAuthToken();
+      return null;
+    }
   }
 
-  async createRecurso(recursoData: { nome: string; tipo: string; quantidade: number }) {
-    const response = await this.fetchWithAuth('/recurso', {
-      method: 'POST',
-      body: JSON.stringify(recursoData),
-    });
-    return response.json();
+  // Obter dados do dashboard
+  async getDashboardData(): Promise<any> {
+    try {
+      const response = await fetch(`${this.baseURL}/dashboard/`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+      });
+
+      console.log(this.getAuthHeaders())
+      console.log('Dashboard response status:', response.status);
+      if (!response.ok) {
+        throw new Error('Erro ao carregar dados do dashboard');
+      }
+
+      const data = await response.json();
+      
+      // Simular dados de dashboard se não existirem no backend
+      return {
+        data: {
+          stats: {
+            total_usuarios: data.length || 0,
+            total_recursos: 0,
+            recursos_criticos: 0,
+            alertas_pendentes: 3
+          },
+          recent_activity: [
+            'Novo usuário cadastrado',
+            'Recurso adicionado ao sistema',
+            'Alerta de estoque baixo',
+            'Backup realizado com sucesso'
+          ],
+          permissions: ['read', 'create', 'update']
+        }
+      };
+    } catch (error) {
+      console.error('Erro ao carregar dashboard:', error);
+      // Retornar dados simulados em caso de erro
+      return {
+        data: {
+          stats: {
+            total_usuarios: 1,
+            total_recursos: 0,
+            recursos_criticos: 0,
+            alertas_pendentes: 3
+          },
+          recent_activity: [
+            'Login realizado com sucesso',
+            'Sistema inicializado'
+          ],
+          permissions: ['read']
+        }
+      };
+    }
   }
 
-  async updateRecurso(id: number, recursoData: Partial<{ nome: string; tipo: string; quantidade: number }>) {
-    const response = await this.fetchWithAuth(`/recurso/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(recursoData),
-    });
-    return response.json();
+  // Obter estatísticas do dashboard
+  async getDashboardStats(): Promise<any> {
+    try {
+      const user = this.getCurrentUser();
+      if (!user) throw new Error('Usuário não encontrado');
+
+      // Simular estatísticas baseadas no cargo do usuário
+      let stats = {};
+
+      switch (user.cargo) {
+        case 'admin':
+          stats = {
+            total_usuarios: 5,
+            total_recursos: 25,
+            recursos_criticos: 3,
+            alertas_pendentes: 7
+          };
+          break;
+        case 'gerente':
+          stats = {
+            total_recursos: 25,
+            recursos_criticos: 3,
+            tarefas_pendentes: 12,
+            relatorios_pendentes: 2
+          };
+          break;
+        default:
+          stats = {
+            meus_recursos: 5,
+            tarefas_pendentes: 3,
+            notificacoes: 8,
+            recursos_disponiveis: 25
+          };
+      }
+
+      return {
+        stats,
+        user_role: user.cargo
+      };
+    } catch (error) {
+      console.error('Erro ao carregar estatísticas:', error);
+      return {
+        stats: {
+          total_recursos: 0,
+          recursos_criticos: 0,
+          alertas_pendentes: 0
+        },
+        user_role: 'usuario'
+      };
+    }
   }
 
-  async deleteRecurso(id: number) {
-    const response = await this.fetchWithAuth(`/recurso/${id}`, {
-      method: 'DELETE',
-    });
-    return response.json();
+  // Obter recursos
+  async getRecursos(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.baseURL}/recurso/`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao carregar recursos');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao carregar recursos:', error);
+      return [];
+    }
   }
 
-  // Métodos para dashboard
-  async getDashboardData() {
-    const response = await this.fetchWithAuth('/dashboard');
-    return response.json();
-  }
+  // Criar recurso
+  async createRecurso(recursoData: any): Promise<any> {
+    try {
+      const response = await fetch(`${this.baseURL}/recurso/`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(recursoData),
+      });
 
-  async getDashboardStats() {
-    const response = await this.fetchWithAuth('/dashboard/stats');
-    return response.json();
+      if (!response.ok) {
+        throw new Error('Erro ao criar recurso');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao criar recurso:', error);
+      throw error;
+    }
   }
 }
 
-// Exportar instância singleton
 export const authService = new AuthService();
-export default authService;

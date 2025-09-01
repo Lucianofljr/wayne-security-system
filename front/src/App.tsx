@@ -7,7 +7,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { AlertProvider } from './contexts/AlertContext';
 import { AlertContainer } from './components/AlertContainer/AlertContainer';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { Dashboard } from './components/Dashboard/Dashboard';
+import { DashboardPage } from './pages/Dashboard';
 
 
 
@@ -26,7 +26,7 @@ export function App() {
                             path='/dashboard'
                             element={
                                 <ProtectedRoute>
-                                    <Dashboard />
+                                    <DashboardPage />
                                 </ProtectedRoute>
                             }
                         />

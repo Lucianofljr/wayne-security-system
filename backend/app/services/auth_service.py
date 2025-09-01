@@ -9,9 +9,10 @@ def create_user(user_data):
     try:
         existing_user = db.query(Usuario).filter_by(email=user_data['email']).first()
         if existing_user:
-            return {"message": "E-mail ja cadastrado", "Sucesso": False}
+            return {"message": "E-mail já cadastrado", "success": False}
         
-        if len(user_data.get('senha', '')):
+        # CORREÇÃO: Verificar se senha tem pelo menos 6 caracteres
+        if len(user_data.get('senha', '')) < 6:
             return {
                 "message": "Senha deve conter pelo menos 6 caracteres.",
                 "success": False
@@ -44,10 +45,9 @@ def create_user(user_data):
 
         tokens = create_tokens(new_user.id, user_info)
 
-
         return {
             "message": "Usuario criado com sucesso",
-            "sucess": True,
+            "success": True,  # CORREÇÃO: usar "success" consistentemente
             "user": {
                 "id": new_user.id,
                 "name": new_user.name,
@@ -57,15 +57,15 @@ def create_user(user_data):
             },
             "token": tokens['access_token'],
             "refreshtoken": tokens['refresh_token']
-            }
+        }
     
     except IntegrityError:
         db.rollback()
-        return {"message": f"E-mail ja cadastrado", "success": False}
+        return {"message": "E-mail já cadastrado", "success": False}
     
     except Exception as e:
         db.rollback()
-        return {"message": f"Erro ao criar usuario: {str(e)}", "sucess": False}
+        return {"message": f"Erro ao criar usuario: {str(e)}", "success": False}
     
     finally:
         db.close()
@@ -76,7 +76,6 @@ def authenticate_user(email, senha):
         user = db.query(Usuario).filter_by(email=email).first()
 
         if user and verificar_senha(user.senha_hash, senha):
-
             user_info = {
                 "name": user.name,
                 "cpf": user.cpf,
@@ -100,11 +99,10 @@ def authenticate_user(email, senha):
                 "refreshtoken": tokens['refresh_token']
             }
     
-        return {"message": "Credenciais invalidas", "sucess": False}
+        return {"message": "Credenciais invalidas", "success": False}
     
     finally:
         db.close()
-
 
 def get_user_by_id(user_id):
     db = SessionLocal()

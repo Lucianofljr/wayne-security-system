@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./ResourcesWidget.module.css";
+import styles from "./ResourceWidget.module.css";
 
 interface Resource {
   id: number;

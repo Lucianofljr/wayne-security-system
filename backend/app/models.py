@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from datetime import datetime
 from app.database import Base, engine
 
 class Usuario(Base):
@@ -44,3 +45,22 @@ class Dashboard(Base):
 
     usuario = relationship("Usuario", backref="dashboards")
 
+class Alerta(Base):
+    __tablename__ = "alerta"
+
+    id = Column(Integer, primary_key=True, index=True)
+    titulo = Column(String(100), nullable=False)  # Ex: "Estoque baixo"
+    descricao = Column(String(255), nullable=True)  # Detalhe do alerta
+    status = Column(Enum("pendente", "resolvido", "nao_lido", "lido", name="status_alerta"), default="pendente")
+    
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=True)  
+    usuario = relationship("Usuario", back_populates="alertas")
+
+    criado_em = Column(DateTime, default=datetime.utcnow)
+    atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    prioridade = Column(Enum("baixa", "media", "alta", "critica", name="prioridade_alerta"), default="baixa")
+
+    # Exemplo: se for relacionado a um recurso específico
+    recurso_id = Column(Integer, ForeignKey("recursos.id"), nullable=True)
+    recurso = relationship("Recurso", back_populates="alertas")
