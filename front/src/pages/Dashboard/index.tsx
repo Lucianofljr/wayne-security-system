@@ -1,6 +1,6 @@
 // front/src/pages/Dashboard/index.tsx
 import { useEffect, useState } from 'react';
-import { useAuth } from '../../components/ProtectedRoute';
+import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAlert } from '../../contexts/AlertContext';
 import { authService } from '../../services/authService';
@@ -8,7 +8,7 @@ import { NavBar } from '../../components/NavBar/NavBar';
 import { StatsCard } from '../../components/Dashboard/StatsCard';
 import { ActivityFeed } from '../../components/Dashboard/ActivityFeed';
 import { QuickActions } from '../../components/Dashboard/QuickActions';
-import { ResourcesWidget } from '../../components/ResourcesWidget';
+import { ResourcesWidget } from '../../components/Dashboard/ResourceWidget';
 import { WelcomeHeader } from '../../components/Dashboard/WelcomeHeader';
 import styles from './Dashboard.module.css';
 

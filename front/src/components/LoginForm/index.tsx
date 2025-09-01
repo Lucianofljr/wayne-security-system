@@ -54,7 +54,7 @@ export default function LoginForm() {
             />
             <input
                 type="password"
-                name='password'
+                name='senha'
                 placeholder='Senha'
                 value={form.senha}
                 onChange={handleChange}
