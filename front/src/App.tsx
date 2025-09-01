@@ -8,6 +8,7 @@ import { AlertProvider } from './contexts/AlertContext';
 import { AlertContainer } from './components/AlertContainer/AlertContainer';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { DashboardPage } from './pages/Dashboard';
+import { ResourcesPage } from './pages/Resource';
 
 
 
@@ -30,6 +31,14 @@ export function App() {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route 
+                            path='/resource' 
+                            element={
+                                <ProtectedRoute>
+                                    <ResourcesPage /> 
+                                </ProtectedRoute>
+                            }
+                            />
                     </Routes>
                 </div>
                 </BrowserRouter>

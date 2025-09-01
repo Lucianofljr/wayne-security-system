@@ -28,23 +28,24 @@ export interface AuthResponse {
 }
 
 class AuthService {
-  getToken() {
-      throw new Error('Method not implemented.');
-  }
   private baseURL = 'http://localhost:5000/api'; // Ajuste conforme sua configuração
   
   // Salva o token no localStorage
   private setAuthToken(token: string): void {
     localStorage.setItem('authToken', token);
   }
-
+  
   // Remove o token do localStorage
   private removeAuthToken(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   }
-
+  
+  getToken(): string | null { 
+      return localStorage.getItem('authToken');
+  }
+  
   // Recupera o token do localStorage
   private getAuthToken(): string | null {
     return localStorage.getItem('authToken');

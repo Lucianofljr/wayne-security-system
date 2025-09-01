@@ -1,4 +1,6 @@
 import styles from './NavBar.module.css';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { 
     LogOut,
@@ -9,10 +11,12 @@ import {
 
 
 export function NavBar() {
+
+    const navigate = useNavigate();
     return (
         <nav className={styles.navbar}>
             <div className={styles['navbar-brand']}>
-                <a href="">Minha Aplicacao</a>
+                <a href="">BatGestor</a>
             </div>
             <ul className={styles['navbar-links']}>
                 <li>
@@ -31,7 +35,10 @@ export function NavBar() {
                     </button>
                 </li>
                 <li>
-                    <button>
+                    <button onClick={() => {
+                        localStorage.removeItem('token');
+                        navigate('/');
+                    }}>
                         <LogOut/>
                     </button>
                 </li>

@@ -16,6 +16,8 @@ class Usuario(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
+    alertas = relationship("Alerta", back_populates="usuario")
+
     def __repr__(self):
         return f"<Usuario(id={self.id}, email={self.email}, Cpf={self.cpf}, cargo={self.cargo}>)"
 
@@ -30,6 +32,9 @@ class Recurso(Base):
     valor_unit = Column(Float, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    alertas = relationship("Alerta", back_populates="recurso")
+
 
 
 
