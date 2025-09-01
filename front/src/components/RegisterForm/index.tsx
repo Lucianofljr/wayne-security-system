@@ -1,5 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom';
 
+import styles from './LoginPage.module.css'
 
 
 interface FormData {
@@ -18,6 +20,8 @@ export default function RegisterForm() {
         password: "",
         confirmPassword: "",
     });
+
+    const navigate = useNavigate()
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setForm({...form, [e.target.name]: e.target.value})
@@ -74,6 +78,9 @@ export default function RegisterForm() {
             />
 
             <button type='submit'>Registrar-se</button>
+            <p className={styles['create-account']} onClick={() => navigate('/')}>
+                Página inicial
+            </p>
         </form>
     )
 }

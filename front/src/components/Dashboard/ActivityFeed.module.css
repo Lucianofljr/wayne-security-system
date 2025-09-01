@@ -1,0 +1,134 @@
+.activityFeed {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: fit-content;
+}
+
+.activityFeed.dark {
+    background: var(--card-background, #161b22);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-text, #c9d1d9);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-text, #1f2937);
+    margin: 0;
+}
+
+.badge {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.feedContainer {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.feedContainer::-webkit-scrollbar {
+    width: 4px;
+}
+
+.feedContainer::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+}
+
+.feedContainer::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.feedContainer::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.activityList {
+    position: relative;
+}
+
+.activityItem {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+}
+
+.activityItem:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.activityLine {
+    position: absolute;
+    left: 18px;
+    top: 32px;
+    bottom: -16px;
+    width: 2px;
+}
+
+.connector {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(59, 130, 246, 0.3),
+        rgba(59, 130, 246, 0.1)
+    );
+    border-radius: 1px;
+}
+
+.activityIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: white;
+    flex-shrink: 0;
+    z-index: 1;
+    position: relative;
+}
+
+.activityFeed.dark .activityIcon {
+    background: var(--card-background, #161b22);
+}
+
+.activityIcon.success {
+    border-color: #22c55e;
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.activityIcon.warning {
+    border-color: #f59e0b;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.activityIcon.system {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}

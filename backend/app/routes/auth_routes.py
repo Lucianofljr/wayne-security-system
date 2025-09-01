@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
-from app.services.auth_service import create_user, authenticate_user
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from app.services.auth_service import create_user, authenticate_user, get_user_by_id
+from app.services.jwt_service import revoke_token, get_current_user_from_token  
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -9,6 +11,11 @@ def login_route():
         data = request.json
         if not data or 'email' not in data or 'senha' not in data:
             return jsonify({"message": "Email a senha. (Obrigatorios)"}), 400
+        
+        if not data['email'].strip() or not data['senha'].strip():
+            return jsonify ({
+                "message": "Email e senha devem estar preenchidos"
+            }), 400
 
         result = authenticate_user(data['email'], data['senha'])
 
@@ -25,12 +32,18 @@ def login_route():
 def register():
     try:
         data = request.json
-        required_fields = {'name', 'email', 'senha', 'cargo'}
+        required_fields = {'name', 'cpf', 'email', 'senha', 'cargo'}
 
         if not data or not all(field in data for field in required_fields):
             return jsonify({
-                "message": "Campos obrigatorios: Nome, E-mail, Senha e Cargo"
+                "message": "Campos obrigatorios: Nome, CPF, E-mail, Senha e Cargo"
             }), 400
+        
+        for field in required_fields:
+            if not data[field].strip():
+                return jsonify({
+                    "message": f"Campo {field} deve estar preenchido."
+                }), 400
         
         result = create_user(data)
 
@@ -42,4 +55,97 @@ def register():
 
     except Exception as e:
         return jsonify({"message": f"Erro interno: {str(e)}"}), 500
+
+
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+
+    try:
+        user_id = get_jwt_identity()
+
+        user_data = get_user_by_id(user_id)
+
+        if not user_data:
+            return jsonify({
+                "message": "Usuario não encontrado.",
+            }), 400
+        
+        additional_claims = {
+            "name": user_data['name'],
+            "cpf": user_data['cpf'],
+            "email": user_data['email'],
+            "cargo": user_data['cargo']
+        }
+
+        new_token = create_access_token(
+            identity = user_id,
+            additional_claims = additional_claims
+        )
+        
+
+        return jsonify({
+            "token": new_token,
+            "message": "Token renovado com sucesso!"
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "message": f"Erro interno: {str(e)}"
+        }), 500
+    
+@auth_bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    try:
+        revoke_token()
+        return jsonify({
+            "message": "Você se desconectou.",
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "message": f"Erro interno: {str(e)}"
+        }), 500
+    
+
+@auth_bp.route('/me', methods=['GET'])
+@jwt_required()
+def get_current_user():
+    try:
+        user_data = get_current_user_from_token()
+
+        if user_data:
+            return jsonify({
+                "user": user_data,
+            }), 200
+        
+        else:
+            return jsonify({
+                "message": "Dados do usuário não cadastrados",
+            }), 404
+        
+    except Exception as e:
+        return jsonify({
+            "message": f"Erro interno: {str(e)}"
+        }), 500
+    
+
+@auth_bp.route('/validate', methods=['GET'])
+@jwt_required()
+def validate_token():
+    try:
+        user_data = get_current_user_from_token()
+
+        return jsonify({
+            "valid": True,
+            "user": user_data
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "valid": False,
+            "message": f"Token inválido {str(e)}"
+        }), 401
+
 

@@ -1,0 +1,122 @@
+.statsCard {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.statsCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.statsCard.dark {
+    background: var(--card-background, #161b22);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-text, #c9d1d9);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.success .iconContainer {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.warning .iconContainer {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.danger .iconContainer {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.info .iconContainer {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+}
+
+.cardTitle {
+    flex: 1;
+}
+
+.cardTitle h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--secondary-text, #6b7280);
+    margin: 0 0 0.25rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.trendIcon {
+    width: 14px;
+    height: 14px;
+}
+
+.trendPercentage {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.cardContent {
+    margin-bottom: 1rem;
+}
+
+.value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, var(--primary-text, #1f2937), var(--secondary-text, #4b5563));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.success .value {
+    background: linear-gradient(45deg, #22c55e, #16a34a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.warning .value {
+    background: linear-gradient(45deg, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
