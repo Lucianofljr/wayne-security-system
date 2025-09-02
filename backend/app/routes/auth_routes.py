@@ -113,21 +113,32 @@ def logout():
 @jwt_required()
 def get_current_user():
     try:
-        user_data = get_current_user_from_token()
-
-        if user_data:
-            return jsonify({
-                "user": user_data,
-            }), 200
+        current_user = get_current_user_from_token()
         
-        else:
+        if not current_user:
             return jsonify({
-                "message": "Dados do usuário não cadastrados",
+                'message': 'Usuário não encontrado',
+                'error': 'user_not_found'
             }), 404
+        
+        # Buscar dados atualizados do usuário no banco
+        user_data = get_user_by_id(current_user['id'])
+        
+        if not user_data:
+            return jsonify({
+                'message': 'Usuário não encontrado no banco de dados',
+                'error': 'user_not_found'
+            }), 404
+        
+        return jsonify({
+            'success': True,
+            'user': user_data
+        }), 200
         
     except Exception as e:
         return jsonify({
-            "message": f"Erro interno: {str(e)}"
+            'message': f'Erro ao obter usuário atual: {str(e)}',
+            'error': 'internal_error'
         }), 500
     
 

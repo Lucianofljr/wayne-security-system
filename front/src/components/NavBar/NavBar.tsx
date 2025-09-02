@@ -20,12 +20,12 @@ export function NavBar() {
             </div>
             <ul className={styles['navbar-links']}>
                 <li>
-                    <button>
+                    <button onClick={() => navigate('/dashboard')}>
                         <ChartNoAxesCombined/>
                     </button>
                 </li>
                 <li>
-                    <button>
+                    <button onClick={() => navigate('/resource')}>
                         <BookText/>
                     </button>
                 </li>

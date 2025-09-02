@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Download, TrendingUp } from 'lucide-react';
+import { Plus, Search, Download } from 'lucide-react';
 import { NavBar } from '../../components/NavBar/NavBar';
-import { ResourceTable } from '../../components/Resources/ResourceTable';
-import { ResourceForm } from '../../components/Resources/ResourceForm';
+import { ResourceTable } from '../../components/ResourceForm/ResourceTable';
+import { ResourceForm } from '../../components/ResourceForm/ResourceForm';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAlert } from '../../contexts/AlertContext';
 import { useAuth } from '../../hooks/useAuth';
@@ -113,16 +113,20 @@ export function ResourcesPage() {
         }
     };
 
-    const handleUpdateRecurso = async (data: UpdateRecursoData) => {
+    const handleUpdateRecurso = async (data: CreateRecursoData | UpdateRecursoData) => {
         if (!editingRecurso) return;
-
+    
         try {
             setIsSubmitting(true);
-            await resourceService.updateRecurso(editingRecurso.id, data);
+            const updateData: UpdateRecursoData = {
+                ...data,
+                nome: data.nome ?? editingRecurso.nome,
+            };
+            await resourceService.updateRecurso(editingRecurso.id, updateData);
             await loadRecursos();
             setIsFormOpen(false);
             setEditingRecurso(null);
-            showSuccess(`Recurso "${data.nome || editingRecurso.nome}" atualizado!`, 'Sucesso');
+            showSuccess(`Recurso "${updateData.nome}" atualizado!`, 'Sucesso');
         } catch (error: any) {
             console.error('Erro ao atualizar recurso:', error);
             throw error;

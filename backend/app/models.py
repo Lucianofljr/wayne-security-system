@@ -50,6 +50,8 @@ class Dashboard(Base):
 
     usuario = relationship("Usuario", backref="dashboards")
 
+
+
 class Alerta(Base):
     __tablename__ = "alerta"
 

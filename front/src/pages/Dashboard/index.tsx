@@ -24,7 +24,7 @@ interface DashboardStats {
 }
 
 export function DashboardPage() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const { theme } = useTheme();
     const { showError } = useAlert();
     

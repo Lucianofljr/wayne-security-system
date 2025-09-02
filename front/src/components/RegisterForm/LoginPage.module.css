@@ -50,13 +50,12 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 }
 
 .login-right h2 {
-    font-size: 5rem;
+    font-size: 3.5rem;
     color: var(--primary-text);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .login-right label {
@@ -68,17 +67,17 @@
 .login-right form input {
     width: 100%;
     padding: 1.4rem;
-    margin-bottom: 3rem;
-    border: 3px solid #ddd;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
     border-radius: 0.8rem;
     font-size: 2rem;
     transition: 0.3seg;
 }
 
 .login-right form input:focus {
-    border-color: rgb(150, 20, 20);
+    border-color: var(--hover-button);
     outline: none;
-    box-shadow: 0 0 0.5rem rgba(42, 39, 95, 0.5);
+    box-shadow: 0 0 0.5rem rgba(30, 60, 114, 0.5);
 }
 
 .form-options {
@@ -108,8 +107,6 @@
     cursor: pointer;
     font-size: 2rem;
     transition: 0.3seg;
-    margin-top: 20px;
-    height: 70px;
 }
 
 .login-right button:hover {
